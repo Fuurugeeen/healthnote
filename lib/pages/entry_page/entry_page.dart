@@ -7,10 +7,11 @@ import '../../../core/styles/styles.dart';
 import '../../../features/prescription/data/models/prescription_entry_model.dart';
 import '../../../features/prescription/domain/prescription_entry_provider.dart';
 import '../../../features/prescription/presentation/medicine_daily_dosage_value_select.dart';
-import '../../../features/prescription/presentation/medicine_details.dart';
 import '../../../features/prescription/presentation/medicine_dosing_period_select.dart';
 import '../../../features/prescription/presentation/medicine_taking_type_select.dart';
 import '../../../features/prescription/presentation/medicine_type_select.dart';
+import '../../features/prescription/presentation/medicine_details_input.dart';
+import '../../features/prescription/presentation/medicine_memo_input.dart';
 
 @RoutePage()
 class EntryPage extends ConsumerStatefulWidget {
@@ -23,6 +24,9 @@ class EntryPage extends ConsumerStatefulWidget {
 }
 
 class _EntryPageState extends ConsumerState<EntryPage> {
+  /// 画面初期化完了フラグ
+  bool initFlag = false;
+
   /// 処方箋入力
   final prescriptionEntryProvider =
       NotifierProvider<PrescriptionEntryNotifier, PrescriptionEntryModel>(
@@ -36,6 +40,10 @@ class _EntryPageState extends ConsumerState<EntryPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       // 画面描画完了後に処理を実行
       ref.read(prescriptionEntryProvider.notifier).initEntry();
+
+      setState(() {
+        initFlag = true;
+      });
     });
   }
 
@@ -49,148 +57,166 @@ class _EntryPageState extends ConsumerState<EntryPage> {
       appBar: AppBar(
         title: const Text('入力画面'),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.only(
-            top: 16.h,
-            left: 16.w,
-            right: 16.w,
-            bottom: 16.h,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              // 薬種類
-              Text(
-                '種類',
-                style: titleTs,
-              ),
-              MedicineTypeSelect(
-                inputProvider: prescriptionEntryProvider,
-              ),
-              SizedBox(height: 8.h),
-
-              // 服用回数
-              Text(
-                '服用回数',
-                style: titleTs,
-              ),
-              MedicineTakingTypeSelect(
-                inputProvider: prescriptionEntryProvider,
-              ),
-              SizedBox(height: 8.h),
-
-              // 服用期間
-              Text(
-                '服用期間',
-                style: titleTs,
-              ),
-              MedicineDosingPeriodSelect(
-                inputProvider: prescriptionEntryProvider,
-              ),
-              SizedBox(height: 8.h),
-
-              // 服用量
-              Text(
-                '服用量（1回あたり）',
-                style: titleTs,
-              ),
-              DailyDosageValueSelect(
-                inputProvider: prescriptionEntryProvider,
-              ),
-              SizedBox(height: 8.h),
-
-              // 薬名
-              Text(
-                '内、薬名',
-                style: titleTs,
-              ),
-              Padding(
+      body: initFlag == false
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              child: Padding(
                 padding: EdgeInsets.only(
+                  top: 16.h,
                   left: 16.w,
                   right: 16.w,
+                  bottom: 16.h,
                 ),
-                child: MedicineDetailsSelect(
-                  inputProvider: prescriptionEntryProvider,
-                ),
-              ),
-              SizedBox(height: 8.h),
-
-              // 登録
-              SizedBox(height: 32.h),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () async {
-                    // // 登録
-                    // context.router.pop();
-
-                    final validations = ref
-                        .read(prescriptionEntryProvider.notifier)
-                        .validationAll();
-
-                    if (validations.isNotEmpty) {
-                      // バリデーションエラーがあれば表示
-                      return showDialog<void>(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            title: const Text('エラー'),
-                            content: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: validations
-                                  .map(
-                                    Text.new,
-                                  )
-                                  .toList(),
-                            ),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: const Text('OK'),
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    }
-
-                    // データベース登録
-                    final item = ref.read(prescriptionEntryProvider);
-                    await ref
-                        .read(prescriptionEntryProvider.notifier)
-                        .dbInsertMedicine(
-                          prescriptionEntryModel: item,
-                        );
-
-                    if (context.mounted) {
-                      // スナックバー表示
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('登録しました'),
-                          duration: Duration(seconds: 1),
-                        ),
-                      );
-                      Navigator.pop(context);
-                    }
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: Text(
-                      '登録',
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    // 薬種類
+                    Text(
+                      '種類',
                       style: titleTs,
                     ),
-                  ),
+                    MedicineTypeSelect(
+                      inputProvider: prescriptionEntryProvider,
+                    ),
+                    SizedBox(height: 8.h),
+
+                    // 服用回数
+                    Text(
+                      '服用回数',
+                      style: titleTs,
+                    ),
+                    MedicineTakingTypeSelect(
+                      inputProvider: prescriptionEntryProvider,
+                    ),
+                    SizedBox(height: 8.h),
+
+                    // 服用期間
+                    Text(
+                      '服用期間',
+                      style: titleTs,
+                    ),
+                    MedicineDosingPeriodSelect(
+                      inputProvider: prescriptionEntryProvider,
+                    ),
+                    SizedBox(height: 8.h),
+
+                    // 服用量
+                    Text(
+                      '服用量（1回あたり）',
+                      style: titleTs,
+                    ),
+                    DailyDosageValueSelect(
+                      inputProvider: prescriptionEntryProvider,
+                    ),
+                    SizedBox(height: 8.h),
+
+                    // 薬名
+                    Text(
+                      '内、薬名',
+                      style: titleTs,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(
+                        left: 16.w,
+                        right: 16.w,
+                      ),
+                      child: MedicineDetailsInput(
+                        inputProvider: prescriptionEntryProvider,
+                      ),
+                    ),
+                    SizedBox(height: 24.h),
+
+                    // メモ
+                    Text(
+                      'メモ',
+                      style: titleTs,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(
+                        left: 16.w,
+                        right: 16.w,
+                      ),
+                      child: MedicineMemoInput(
+                        inputProvider: prescriptionEntryProvider,
+                      ),
+                    ),
+                    SizedBox(height: 8.h),
+
+                    // 登録
+                    SizedBox(height: 32.h),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          // // 登録
+                          // context.router.pop();
+
+                          final validations = ref
+                              .read(prescriptionEntryProvider.notifier)
+                              .validationAll();
+
+                          if (validations.isNotEmpty) {
+                            // バリデーションエラーがあれば表示
+                            return showDialog<void>(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: const Text('エラー'),
+                                  content: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: validations
+                                        .map(
+                                          Text.new,
+                                        )
+                                        .toList(),
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text('OK'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          }
+
+                          // データベース登録
+                          final item = ref.read(prescriptionEntryProvider);
+                          await ref
+                              .read(prescriptionEntryProvider.notifier)
+                              .dbInsertMedicine(
+                                prescriptionEntryModel: item,
+                              );
+
+                          if (context.mounted) {
+                            // スナックバー表示
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('登録しました'),
+                                duration: Duration(seconds: 1),
+                              ),
+                            );
+                            Navigator.pop(context);
+                          }
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(8),
+                          child: Text(
+                            '登録',
+                            style: titleTs,
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    SizedBox(height: 16.h),
+                  ],
                 ),
               ),
-
-              SizedBox(height: 16.h),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 }

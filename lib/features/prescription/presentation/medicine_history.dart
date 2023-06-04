@@ -1,28 +1,29 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:healthnote/core/styles/styles.dart';
-import 'package:slider_button/slider_button.dart';
 
-import '../data/models/prescription_list_model.dart';
-import '../domain/prescription_list_provider.dart';
+import '../../../core/router/router.gr.dart';
+import '../data/models/prescription_history_model.dart';
+import '../domain/prescription_history_provider.dart';
 
-class MedicineList extends ConsumerWidget {
-  const MedicineList({
+class MedicineHistory extends ConsumerWidget {
+  const MedicineHistory({
     super.key,
-    required this.listProvider,
+    required this.historyProvider,
   });
 
-  final AsyncNotifierProvider<PrescriptionListNotifier, PrescriptionListModel>
-      listProvider;
+  final AsyncNotifierProvider<PrescriptionHistoryNotifier,
+      PrescriptionHistoryModel> historyProvider;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final list = ref.watch(listProvider);
+    final list = ref.watch(historyProvider);
 
     return list.when(
       loading: () {
-        return const Text('loading');
+        return const CircularProgressIndicator();
       },
       error: (e, s) {
         return const Text('error');
@@ -41,133 +42,136 @@ class MedicineList extends ConsumerWidget {
               SizedBox(
                 height: 16.h,
               ),
+              if (items.isEmpty)
+                Text(
+                  '登録がありません。',
+                  style: TextStyle(
+                    fontSize: fontSizeL,
+                  ),
+                ),
               ...items.map((e) {
-                return Card(
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                      top: 16.h,
-                      left: 16.w,
-                      right: 16.w,
-                      bottom: 16.h,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'id：${e.id}',
-                          style: TextStyle(
-                            fontSize: fontSizeM,
-                          ),
-                        ),
-                        Text(
-                          e.medicineType.displayName,
-                          style: TextStyle(
-                            fontSize: fontSizeM,
-                          ),
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              e.medicineTakingType.displayName,
-                              style: TextStyle(
-                                fontSize: fontSizeM,
-                              ),
-                            ),
-                            SizedBox(
-                              width: 8.w,
-                            ),
-                            Text(
-                              '${e.dailyDosageValue}錠',
-                              style: TextStyle(
-                                fontSize: fontSizeM,
-                              ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              '服用期間：',
-                              style: TextStyle(
-                                fontSize: fontSizeM,
-                              ),
-                            ),
-                            Text(
-                              e.dosingPeriodStart,
-                              style: TextStyle(
-                                fontSize: fontSizeM,
-                              ),
-                            ),
-                            const Text(
-                              ' ~ ',
-                            ),
-                            Text(
-                              e.dosingPeriodEnd,
-                              style: TextStyle(
-                                fontSize: fontSizeM,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const Divider(),
-                        Row(
-                          children: [
-                            Text(
-                              '飲んだ回数：${e.userTakingCnt}',
-                              style: TextStyle(
-                                fontSize: fontSizeM,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 8.h,
-                        ),
-                        if (e.isUserTaking() == false)
+                return InkWell(
+                  onTap: () async {
+                    await context.pushRoute(EditRoute(item: e));
+
+                    ref.invalidate(historyProvider);
+                  },
+                  child: Card(
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        top: 16.h,
+                        left: 16.w,
+                        right: 16.w,
+                        bottom: 16.h,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
                           Text(
-                            '本日分は飲みきっています',
+                            'id：${e.id}',
                             style: TextStyle(
-                              color: Colors.red,
                               fontSize: fontSizeM,
                             ),
                           ),
-                        if (e.isUserTaking())
+                          Text(
+                            e.medicineType.displayName,
+                            style: TextStyle(
+                              fontSize: fontSizeM,
+                            ),
+                          ),
                           Row(
                             children: [
-                              SizedBox(
-                                width: 16.w,
-                              ),
-                              Expanded(
-                                child: SliderButton(
-                                  height: 24.h,
-                                  buttonSize: 24.h,
-                                  width: double.infinity,
-                                  buttonColor: Colors.blue,
-                                  action: () {
-                                    ref
-                                        .read(listProvider.notifier)
-                                        .dbUpdUserTakingCnt(
-                                          id: e.id,
-                                          userTakingCnt: e.userTakingCnt + 1,
-                                        );
-
-                                    ref.invalidate(listProvider);
-                                  },
-                                  label: Text(
-                                    '薬を飲んだらスワイプ',
-                                    style: TextStyle(
-                                      color: const Color(0xff4a4a4a),
-                                      fontSize: fontSizeM,
-                                    ),
-                                  ),
+                              Text(
+                                e.medicineTakingType.displayName,
+                                style: TextStyle(
+                                  fontSize: fontSizeM,
                                 ),
                               ),
                               SizedBox(
-                                width: 16.w,
+                                width: 8.w,
+                              ),
+                              Text(
+                                '${e.dailyDosageValue}錠',
+                                style: TextStyle(
+                                  fontSize: fontSizeM,
+                                ),
                               ),
                             ],
                           ),
-                      ],
+                          Row(
+                            children: [
+                              Text(
+                                '服用期間：',
+                                style: TextStyle(
+                                  fontSize: fontSizeM,
+                                ),
+                              ),
+                              Text(
+                                e.dosingPeriodStart,
+                                style: TextStyle(
+                                  fontSize: fontSizeM,
+                                ),
+                              ),
+                              const Text(
+                                ' ~ ',
+                              ),
+                              Text(
+                                e.dosingPeriodEnd,
+                                style: TextStyle(
+                                  fontSize: fontSizeM,
+                                ),
+                              ),
+                            ],
+                          ),
+                          if (e.memo != '')
+                            Text(
+                              '備考：${e.memo}',
+                              style: TextStyle(
+                                fontSize: fontSizeM,
+                              ),
+                            ),
+                          if (e.medicineDetails.isNotEmpty) ...[
+                            Text(
+                              '内、薬名：',
+                              style: TextStyle(
+                                fontSize: fontSizeM,
+                              ),
+                            ),
+                            if (e.medicineDetails[0] != '')
+                              Text(
+                                '  ${e.medicineDetails[0]}',
+                                style: TextStyle(
+                                  fontSize: fontSizeM,
+                                ),
+                              ),
+                            if (e.medicineDetails[1] != '')
+                              Text(
+                                '  ${e.medicineDetails[1]}',
+                                style: TextStyle(
+                                  fontSize: fontSizeM,
+                                ),
+                              ),
+                            if (e.medicineDetails[2] != '')
+                              Text(
+                                '  ${e.medicineDetails[2]}',
+                                style: TextStyle(
+                                  fontSize: fontSizeM,
+                                ),
+                              ),
+                          ],
+                          const Divider(),
+                          Row(
+                            children: [
+                              Text(
+                                '飲んだ回数：${e.userTakingCnt}',
+                                style: TextStyle(
+                                  fontSize: fontSizeM,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 );

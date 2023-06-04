@@ -5,6 +5,8 @@ import 'package:healthnote/global/global_init.dart' as gi;
 import 'app.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
   // get_it初期化
   gi.setup();
 

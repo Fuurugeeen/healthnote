@@ -46,7 +46,7 @@ class _CalendarPageState extends ConsumerState<CalendarPage>
   void didChangeTabRoute(TabPageRoute previousRoute) {
     logger.info('CalendarPage didChangeTabRoute');
 
-    // 際読み込み
+    // 再読み込み
     ref.invalidate(prescriptionListProvider);
   }
 
@@ -54,19 +54,16 @@ class _CalendarPageState extends ConsumerState<CalendarPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('飲むお薬'),
+        title: const Text('本日、飲むお薬'),
       ),
-      body: Container(
-        color: Colors.grey[100],
-        child: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              // 処方箋一覧
-              MedicineList(
-                listProvider: prescriptionListProvider,
-              ),
-            ],
-          ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            // 処方箋一覧
+            MedicineList(
+              listProvider: prescriptionListProvider,
+            ),
+          ],
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -76,9 +73,9 @@ class _CalendarPageState extends ConsumerState<CalendarPage>
           // 際読み込み
           ref.invalidate(prescriptionListProvider);
         },
-        tooltip: '処方箋入力',
+        tooltip: '処方箋登録',
         icon: const Icon(Icons.add),
-        label: const Text('処方箋入力'),
+        label: const Text('処方箋登録'),
       ),
     );
   }

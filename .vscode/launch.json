@@ -9,18 +9,24 @@
             "request": "launch",
             "type": "dart",
             "flutterMode": "debug"
-        },
-        {
-            "name": "healthnote (profile mode)",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "profile"
+            // ,"args": [
+            //     "--dart-define-from-file=dart_defines/dev.json"
+            // ]
         },
         {
             "name": "healthnote (release mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release"
+            // ,"args": [
+            //     "--dart-define-from-file=dart_defines/prod.json"
+            // ]
+        },
+        {
+            "name": "healthnote (profile mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
         }
     ]
 }

@@ -1,8 +1,11 @@
+import 'package:get_it/get_it.dart';
+import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../../features/prescription/data/models/prescription_entry_model.dart';
 import '../../global/log.dart';
+import 'shared_preferences_service.dart';
 
 class DatabaseService {
   Database? _database;
@@ -11,6 +14,28 @@ class DatabaseService {
       return _database!;
     }
     _database = await _initDatabase();
+
+    // Todo:前回と日付違うならユーザーの服用回数リセットする
+    // 本当はユーザー用服用回数テーブルに分けたい
+    // 前回起動日を取得 yyyyMMdd
+    final startUp = await GetIt.instance<SharedPreferencesService>()
+            .getSPSInitialStartUpDate() ??
+        '';
+    // 現在の日付 yyyyMMdd
+    final nowDateStr = DateFormat('yyyyMMdd').format(DateTime.now());
+    if (startUp == '') {
+      // 現在日付を保存
+      await GetIt.instance<SharedPreferencesService>()
+          .saveSPSInitialStartUpDate(nowDateStr);
+    } else {
+      if (startUp != nowDateStr) {
+        // 日付変わっているなら、ユーザーの服用回数リセットする
+        await initUserTakingCnt();
+        await GetIt.instance<SharedPreferencesService>()
+            .saveSPSInitialStartUpDate(nowDateStr);
+      }
+    }
+
     return _database!;
   }
 
@@ -19,8 +44,8 @@ class DatabaseService {
 
     final path = join(databasePath, 'health_note.db');
 
-    // // Todo:開発中は毎回DBを削除する
-    // await deleteDatabase(path);
+    //// Todo:開発中は毎回DBを削除する
+    //await deleteDatabase(path);
 
     return openDatabase(
       path,
@@ -38,6 +63,7 @@ class DatabaseService {
               ,dosingPeriodEnd TEXT
               ,medicineDetails TEXT
               ,userTakingCnt INTEGER
+              ,memo TEXT
             )
           ''',
         );
@@ -68,10 +94,27 @@ class DatabaseService {
 
     final id = await db.update(
       'medicine',
+      where: 'id = ?',
+      whereArgs: [prescriptionEntryModel.id],
       await prescriptionEntryModel.toDBParam(),
     );
 
     logger.info('updateMedicine id: $id');
+  }
+
+  /// 薬を削除
+  Future<void> deleteMedicine(
+    PrescriptionEntryModel prescriptionEntryModel,
+  ) async {
+    final db = await database;
+
+    final id = await db.delete(
+      'medicine',
+      where: 'id = ?',
+      whereArgs: [prescriptionEntryModel.id],
+    );
+
+    logger.info('deleteMedicine id: $id');
   }
 
   /// 薬を取得
@@ -91,6 +134,16 @@ class DatabaseService {
     }
 
     return convItems;
+  }
+
+  Future<void> initUserTakingCnt() async {
+    final db = await database;
+    await db.update(
+      'medicine',
+      {
+        'userTakingCnt': 0,
+      },
+    );
   }
 
   Future<void> updatetUserTakingCnt(int id, int userTakingCnt) async {

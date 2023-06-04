@@ -31,11 +31,11 @@ class _MyHomePageState extends ConsumerState<HomePage> {
           items: const [
             BottomNavigationBarItem(
               icon: Icon(Icons.calendar_month),
-              label: 'カレンダー',
+              label: '飲むお薬',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.local_hospital),
-              label: '薬歴',
+              label: '処方箋履歴',
             ),
           ],
           currentIndex: tabsRouter.activeIndex,

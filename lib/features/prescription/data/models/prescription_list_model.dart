@@ -10,7 +10,6 @@ part 'prescription_list_model.g.dart';
 @freezed
 class PrescriptionListModel with _$PrescriptionListModel {
   factory PrescriptionListModel({
-    /// 内、薬名 3件まで
     @Default([]) List<PrescriptionEntryModel> items,
   }) = _PrescriptionListModel;
   PrescriptionListModel._();

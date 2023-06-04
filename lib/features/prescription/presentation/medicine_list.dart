@@ -24,7 +24,9 @@ class MedicineList extends ConsumerWidget {
 
     return list.when(
       loading: () {
-        return const Text('loading');
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
       },
       error: (e, s) {
         return const Text('error');
@@ -42,6 +44,13 @@ class MedicineList extends ConsumerWidget {
               SizedBox(
                 height: 16.h,
               ),
+              if (items.isEmpty)
+                Text(
+                  '登録がありません。',
+                  style: TextStyle(
+                    fontSize: fontSizeL,
+                  ),
+                ),
               ...items.map((e) {
                 return Card(
                   child: Padding(
@@ -119,6 +128,42 @@ class MedicineList extends ConsumerWidget {
                                   ),
                                 ],
                               ),
+                              if (e.memo != '')
+                                Text(
+                                  '備考：${e.memo}',
+                                  style: TextStyle(
+                                    fontSize: fontSizeM,
+                                  ),
+                                ),
+                              if (e.medicineDetails.isNotEmpty) ...[
+                                Text(
+                                  '内、薬名：',
+                                  style: TextStyle(
+                                    fontSize: fontSizeM,
+                                  ),
+                                ),
+                                if (e.medicineDetails[0] != '')
+                                  Text(
+                                    '  ${e.medicineDetails[0]}',
+                                    style: TextStyle(
+                                      fontSize: fontSizeM,
+                                    ),
+                                  ),
+                                if (e.medicineDetails[1] != '')
+                                  Text(
+                                    '  ${e.medicineDetails[1]}',
+                                    style: TextStyle(
+                                      fontSize: fontSizeM,
+                                    ),
+                                  ),
+                                if (e.medicineDetails[2] != '')
+                                  Text(
+                                    '  ${e.medicineDetails[2]}',
+                                    style: TextStyle(
+                                      fontSize: fontSizeM,
+                                    ),
+                                  ),
+                              ],
                             ],
                           ),
                         ),

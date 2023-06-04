@@ -4,8 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/models/prescription_entry_model.dart';
 import '../domain/prescription_entry_provider.dart';
 
-class MedicineDetailsSelect extends ConsumerWidget {
-  const MedicineDetailsSelect({
+class MedicineDetailsInput extends ConsumerWidget {
+  const MedicineDetailsInput({
     super.key,
     required this.inputProvider,
   });

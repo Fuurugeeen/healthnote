@@ -2,6 +2,9 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../features/prescription/data/models/prescription_history_model.dart';
+import '../../../features/prescription/domain/prescription_history_provider.dart';
+import '../../../features/prescription/presentation/medicine_history.dart';
 import '../../../global/log.dart';
 
 @RoutePage()
@@ -14,6 +17,12 @@ class HistoryPage extends ConsumerStatefulWidget {
 
 class _HistoryPageState extends ConsumerState<HistoryPage> with AutoRouteAware {
   AutoRouteObserver? _observer;
+
+  /// 処方箋履歴
+  final prescriptionHistoryProvider = AsyncNotifierProvider<
+      PrescriptionHistoryNotifier, PrescriptionHistoryModel>(
+    PrescriptionHistoryNotifier.new,
+  );
 
   @override
   void didChangeDependencies() {
@@ -34,24 +43,23 @@ class _HistoryPageState extends ConsumerState<HistoryPage> with AutoRouteAware {
   @override
   void didChangeTabRoute(TabPageRoute previousRoute) {
     logger.info('HistoryPage didChangeTabRoute');
+
+    // 再読み込み
+    ref.invalidate(prescriptionHistoryProvider);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('タイトル'),
+        title: const Text('処方箋履歴'),
       ),
-      body: Center(
+      body: SingleChildScrollView(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            ElevatedButton(
-              onPressed: () {},
-              child: const Text('ボタン'),
+            // 処方箋履歴
+            MedicineHistory(
+              historyProvider: prescriptionHistoryProvider,
             ),
           ],
         ),

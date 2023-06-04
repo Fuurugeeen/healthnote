@@ -84,6 +84,19 @@ class PrescriptionEntryNotifier extends Notifier<PrescriptionEntryModel> {
   }
 
   /// 服用期間の開始日を更新
+
+  /// メモを更新
+  void setMedicineMemo({
+    required String text,
+  }) {
+    logger.info('メモを更新');
+
+    state = state.copyWith(
+      memo: text,
+    );
+  }
+
+  /// 服用期間の開始日を更新
   void setDosingPeriodStart(String date) {
     logger.info('服用期間の開始日を更新$date');
     state = state.copyWith(
@@ -129,7 +142,7 @@ class PrescriptionEntryNotifier extends Notifier<PrescriptionEntryModel> {
     return result;
   }
 
-  /// DB登録
+  /// テーブル登録
   Future<void> dbInsertMedicine({
     required PrescriptionEntryModel prescriptionEntryModel,
   }) async {
@@ -138,11 +151,20 @@ class PrescriptionEntryNotifier extends Notifier<PrescriptionEntryModel> {
     );
   }
 
-  /// DB更新
+  /// テーブル更新
   Future<void> dbUpdateMedicine({
     required PrescriptionEntryModel prescriptionEntryModel,
   }) async {
     await GetIt.instance<DatabaseService>().updateMedicine(
+      prescriptionEntryModel,
+    );
+  }
+
+  /// テーブル削除
+  Future<void> dbDelPrescription({
+    required PrescriptionEntryModel prescriptionEntryModel,
+  }) async {
+    await GetIt.instance<DatabaseService>().deleteMedicine(
       prescriptionEntryModel,
     );
   }

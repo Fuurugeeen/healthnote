@@ -24,6 +24,7 @@ _$_PrescriptionEntryModel _$$_PrescriptionEntryModelFromJson(
               .toList() ??
           const ['', '', ''],
       userTakingCnt: json['userTakingCnt'] as int? ?? 0,
+      memo: json['memo'] as String? ?? '',
     );
 
 Map<String, dynamic> _$$_PrescriptionEntryModelToJson(
@@ -38,6 +39,7 @@ Map<String, dynamic> _$$_PrescriptionEntryModelToJson(
       'dosingPeriodEnd': instance.dosingPeriodEnd,
       'medicineDetails': instance.medicineDetails,
       'userTakingCnt': instance.userTakingCnt,
+      'memo': instance.memo,
     };
 
 const _$MedicineTypeEnumMap = {

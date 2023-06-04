@@ -44,6 +44,9 @@ mixin _$PrescriptionEntryModel {
   /// ユーザー服用回数
   int get userTakingCnt => throw _privateConstructorUsedError;
 
+  /// メモ
+  String get memo => throw _privateConstructorUsedError;
+
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $PrescriptionEntryModelCopyWith<PrescriptionEntryModel> get copyWith =>
@@ -64,7 +67,8 @@ abstract class $PrescriptionEntryModelCopyWith<$Res> {
       String dosingPeriodStart,
       String dosingPeriodEnd,
       List<String> medicineDetails,
-      int userTakingCnt});
+      int userTakingCnt,
+      String memo});
 }
 
 /// @nodoc
@@ -89,6 +93,7 @@ class _$PrescriptionEntryModelCopyWithImpl<$Res,
     Object? dosingPeriodEnd = null,
     Object? medicineDetails = null,
     Object? userTakingCnt = null,
+    Object? memo = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -123,6 +128,10 @@ class _$PrescriptionEntryModelCopyWithImpl<$Res,
           ? _value.userTakingCnt
           : userTakingCnt // ignore: cast_nullable_to_non_nullable
               as int,
+      memo: null == memo
+          ? _value.memo
+          : memo // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 }
@@ -143,7 +152,8 @@ abstract class _$$_PrescriptionEntryModelCopyWith<$Res>
       String dosingPeriodStart,
       String dosingPeriodEnd,
       List<String> medicineDetails,
-      int userTakingCnt});
+      int userTakingCnt,
+      String memo});
 }
 
 /// @nodoc
@@ -166,6 +176,7 @@ class __$$_PrescriptionEntryModelCopyWithImpl<$Res>
     Object? dosingPeriodEnd = null,
     Object? medicineDetails = null,
     Object? userTakingCnt = null,
+    Object? memo = null,
   }) {
     return _then(_$_PrescriptionEntryModel(
       id: null == id
@@ -200,6 +211,10 @@ class __$$_PrescriptionEntryModelCopyWithImpl<$Res>
           ? _value.userTakingCnt
           : userTakingCnt // ignore: cast_nullable_to_non_nullable
               as int,
+      memo: null == memo
+          ? _value.memo
+          : memo // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -216,7 +231,8 @@ class _$_PrescriptionEntryModel extends _PrescriptionEntryModel
       this.dosingPeriodStart = '',
       this.dosingPeriodEnd = '',
       final List<String> medicineDetails = const ['', '', ''],
-      this.userTakingCnt = 0})
+      this.userTakingCnt = 0,
+      this.memo = ''})
       : _medicineDetails = medicineDetails,
         super._();
 
@@ -268,9 +284,14 @@ class _$_PrescriptionEntryModel extends _PrescriptionEntryModel
   @JsonKey()
   final int userTakingCnt;
 
+  /// メモ
+  @override
+  @JsonKey()
+  final String memo;
+
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'PrescriptionEntryModel(id: $id, medicineType: $medicineType, medicineTakingType: $medicineTakingType, dailyDosageValue: $dailyDosageValue, dosingPeriodStart: $dosingPeriodStart, dosingPeriodEnd: $dosingPeriodEnd, medicineDetails: $medicineDetails, userTakingCnt: $userTakingCnt)';
+    return 'PrescriptionEntryModel(id: $id, medicineType: $medicineType, medicineTakingType: $medicineTakingType, dailyDosageValue: $dailyDosageValue, dosingPeriodStart: $dosingPeriodStart, dosingPeriodEnd: $dosingPeriodEnd, medicineDetails: $medicineDetails, userTakingCnt: $userTakingCnt, memo: $memo)';
   }
 
   @override
@@ -285,7 +306,8 @@ class _$_PrescriptionEntryModel extends _PrescriptionEntryModel
       ..add(DiagnosticsProperty('dosingPeriodStart', dosingPeriodStart))
       ..add(DiagnosticsProperty('dosingPeriodEnd', dosingPeriodEnd))
       ..add(DiagnosticsProperty('medicineDetails', medicineDetails))
-      ..add(DiagnosticsProperty('userTakingCnt', userTakingCnt));
+      ..add(DiagnosticsProperty('userTakingCnt', userTakingCnt))
+      ..add(DiagnosticsProperty('memo', memo));
   }
 
   @override
@@ -307,7 +329,8 @@ class _$_PrescriptionEntryModel extends _PrescriptionEntryModel
             const DeepCollectionEquality()
                 .equals(other._medicineDetails, _medicineDetails) &&
             (identical(other.userTakingCnt, userTakingCnt) ||
-                other.userTakingCnt == userTakingCnt));
+                other.userTakingCnt == userTakingCnt) &&
+            (identical(other.memo, memo) || other.memo == memo));
   }
 
   @JsonKey(ignore: true)
@@ -321,7 +344,8 @@ class _$_PrescriptionEntryModel extends _PrescriptionEntryModel
       dosingPeriodStart,
       dosingPeriodEnd,
       const DeepCollectionEquality().hash(_medicineDetails),
-      userTakingCnt);
+      userTakingCnt,
+      memo);
 
   @JsonKey(ignore: true)
   @override
@@ -347,7 +371,8 @@ abstract class _PrescriptionEntryModel extends PrescriptionEntryModel {
       final String dosingPeriodStart,
       final String dosingPeriodEnd,
       final List<String> medicineDetails,
-      final int userTakingCnt}) = _$_PrescriptionEntryModel;
+      final int userTakingCnt,
+      final String memo}) = _$_PrescriptionEntryModel;
   _PrescriptionEntryModel._() : super._();
 
   factory _PrescriptionEntryModel.fromJson(Map<String, dynamic> json) =
@@ -383,6 +408,10 @@ abstract class _PrescriptionEntryModel extends PrescriptionEntryModel {
 
   /// ユーザー服用回数
   int get userTakingCnt;
+  @override
+
+  /// メモ
+  String get memo;
   @override
   @JsonKey(ignore: true)
   _$$_PrescriptionEntryModelCopyWith<_$_PrescriptionEntryModel> get copyWith =>

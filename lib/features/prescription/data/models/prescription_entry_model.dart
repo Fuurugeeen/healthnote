@@ -31,6 +31,9 @@ class PrescriptionEntryModel with _$PrescriptionEntryModel {
 
     /// ユーザー服用回数
     @Default(0) int userTakingCnt,
+
+    /// メモ
+    @Default('') String memo,
   }) = _PrescriptionEntryModel;
   PrescriptionEntryModel._();
   factory PrescriptionEntryModel.fromJson(Map<String, dynamic> json) =>
@@ -50,6 +53,8 @@ class PrescriptionEntryModel with _$PrescriptionEntryModel {
   }
 
   /// 服用可能かチェック
+  ///
+  /// 服用可能ならTrueを返す
   bool isUserTaking() {
     // ユーザー服用回数が、服用回数を超えないかチェック
     switch (medicineTakingType) {
