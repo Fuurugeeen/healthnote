@@ -5,6 +5,16 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "healthnote_dev",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "debug",
+            "program": "lib/main_dev.dart"
+            // ,"args": [
+            //     "--dart-define-from-file=dart_defines/dev.json"
+            // ]
+        },
+        {
             "name": "healthnote (debug mode)",
             "request": "launch",
             "type": "dart",
